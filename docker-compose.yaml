@@ -7,3 +7,24 @@ services:
       - "80:80"
     volumes:
       - ./code:/usr/share/nginx/html
+  backend-shop:
+    build:
+      context: .
+      dockerfile: backend-shop/Dockerfile.shop
+    ports:
+      - "3000:3000"
+    environment:
+      PGUSER: user
+      PGHOST: postgres
+      PGDATABASE: database_shop
+      PGPASSWORD: password
+      PGPORT: 5432
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database_shop
