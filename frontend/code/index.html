@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique en ligne</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4">
+        <h1 class="text-xl font-semibold text-gray-800 my-6">Boutique en ligne</h1>
+
+        <!-- Formulaire pour ajouter un article -->
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-lg mb-4">Ajouter un article à vendre</h2>
+            <form id="addItemForm">
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="itemName">Nom de l'article</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="itemName" type="text" placeholder="Nom de l'article">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="itemPrice">Prix</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="itemPrice" type="number" placeholder="Prix en €">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="itemImage">URL de l'image</label>
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="itemImage" type="text" placeholder="http://">
+                </div>
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    Ajouter
+                </button>
+            </form>
+        </div>
+
+        <!-- Liste des articles -->
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <h2 class="text-lg mb-4">Articles en vente</h2>
+            <div id="itemsList">
+                <!-- Les articles seront ajoutés ici par JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
