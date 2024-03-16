@@ -6,7 +6,8 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./code:/usr/share/nginx/html
+      - ./frontend/www:/usr/share/nginx/html
+      - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - frontend-net
 
