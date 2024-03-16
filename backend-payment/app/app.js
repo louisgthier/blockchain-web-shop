@@ -1,6 +1,11 @@
 const { Pool } = require('pg');
 const express = require('express');
+const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const bodyParser = require('body-parser');
+
 const app = express();
+const port = 3001;
 
 
 const pool = new Pool({
@@ -10,6 +15,9 @@ const pool = new Pool({
     password: 'your_password',
     port: 5432,
 });
+
+// Middleware
+app.use(bodyParser.json());
 
 async function getUserBalance(userId) {
     try {
@@ -62,3 +70,10 @@ app.post('/api/transaction', async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 });
+
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+  

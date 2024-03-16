@@ -7,24 +7,58 @@ services:
       - "80:80"
     volumes:
       - ./code:/usr/share/nginx/html
+    networks:
+      - frontend-net
+
   backend-shop:
-    build:
-      context: .
-      dockerfile: backend-shop/Dockerfile.shop
-    ports:
-      - "3000:3000"
+    build: ./backend-shop
     environment:
       PGUSER: user
-      PGHOST: postgres
+      PGHOST: db-shop
       PGDATABASE: database_shop
       PGPASSWORD: password
       PGPORT: 5432
+    ports:
+      - "3000:3000"
+    networks:
+      - backend-shop-net
     depends_on:
-      - postgres
+      - db-shop
 
-  postgres:
+  backend-payment:
+    build: ./backend-payment
+    environment:
+      PGUSER: user
+      PGHOST: db-payment
+      PGDATABASE: database_payment
+      PGPASSWORD: password
+      PGPORT: 5432
+    ports:
+      - "3001:3001"
+    networks:
+      - backend-payment-net
+    depends_on:
+      - db-payment
+
+  db-shop:
     image: postgres
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database_shop
+    networks:
+      - backend-shop-net
+
+  db-payment:
+    image: postgres
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: database_payment
+    networks:
+      - backend-payment-net
+
+networks:
+  frontend-net:
+  backend-shop-net:
+  backend-payment-net:
