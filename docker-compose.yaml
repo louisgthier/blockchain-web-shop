@@ -23,6 +23,7 @@ services:
       - "3000:3000"
     networks:
       - backend-shop-net
+      - frontend-net
     depends_on:
       - db-shop
 
@@ -47,6 +48,9 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: database_shop
+    volumes:
+      - db-shop-volume:/var/lib/postgresql/data
+      - ./init-db-shop:/docker-entrypoint-initdb.d
     networks:
       - backend-shop-net
 
@@ -58,6 +62,9 @@ services:
       POSTGRES_DB: database_payment
     networks:
       - backend-payment-net
+
+volumes:
+  db-shop-volume:
 
 networks:
   frontend-net:

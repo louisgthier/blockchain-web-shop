@@ -31,9 +31,14 @@ app.get('/api/items', async (req, res) => {
 });
 
 app.post('/api/item', async (req, res) => {
-  const { name, price } = req.body;
+  const { name, price, photo_url } = req.body;
   try {
-    await pool.query('INSERT INTO items (name, price, seller_id) VALUES ($1, $2, $3)', [name, price, seller_id]);
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, 'secret_key');
+    const { username } = decodedToken;
+    const { rows } = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+    const seller_id = rows[0].id;
+    await pool.query('INSERT INTO items (name, price, seller_id, photo_url) VALUES ($1, $2, $3, $4)', [name, price, seller_id, photo_url]);
     res.sendStatus(201);
   } catch (error) {
     console.error('Error adding item:', error);
@@ -52,7 +57,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-app.get('/api/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     try {
       const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
@@ -99,18 +104,3 @@ async function callExternalAPIForTransaction(data) {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
-
-// CREATE TABLE users (
-//     id SERIAL PRIMARY KEY,
-//     username VARCHAR(100) NOT NULL,
-//     password VARCHAR(100) NOT NULL,
-//     balance NUMERIC(10, 2) DEFAULT 1000
-// );
-
-// CREATE TABLE items (
-//     id SERIAL PRIMARY KEY,
-//     name VARCHAR(255) NOT NULL,
-//     price NUMERIC(10, 2) NOT NULL
-//     seller_id INT NOT NULL REFERENCES users(id)
-// );
