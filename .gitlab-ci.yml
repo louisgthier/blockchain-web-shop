@@ -3,7 +3,7 @@ stages:
   - build_backend-payment
 
 variables:
-  IMAGE_NAME1: "vivien8/backend_shop"
+  IMAGE_NAME1: "vivien8/backend-shop"
   IMAGE_NAME2: "vivien8/backend-payment"
 
 build_backend-shop:
