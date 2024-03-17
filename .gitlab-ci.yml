@@ -1,11 +1,13 @@
 stages:
-  - build_backend_shop
+  - build_backend-shop
+  - build_backend-payment
 
 variables:
   IMAGE_NAME1: "vivien8/backend_shop"
+  IMAGE_NAME2: "vivien8/backend-payment"
 
-build_backend_shop:
-  stage: build_backend_shop
+build_backend-shop:
+  stage: build_backend-shop
   image:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
@@ -19,3 +21,19 @@ build_backend_shop:
       --context "${CI_PROJECT_DIR}"
       --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
       --destination "${IMAGE_NAME1}:${CI_COMMIT_SHORT_SHA}" 
+
+build_backend-payment:
+  stage: build_backend-payment
+  image:
+    name: gcr.io/kaniko-project/executor:v1.14.0-debug
+    entrypoint: [""]
+
+  script:
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s"
+      "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d
+      '\n')\"}}}" > /kaniko/.docker/config.json
+
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
+      --destination "${IMAGE_NAME2}:${CI_COMMIT_SHORT_SHA}"
