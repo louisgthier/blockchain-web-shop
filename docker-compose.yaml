@@ -12,6 +12,7 @@ services:
       - frontend-net
     depends_on:
       - backend-shop
+      - backend-payment
 
   backend-shop:
     build: ./backend-shop
@@ -31,16 +32,11 @@ services:
 
   backend-payment:
     build: ./backend-payment
-    environment:
-      PGUSER: user
-      PGHOST: db-payment
-      PGDATABASE: database_payment
-      PGPASSWORD: password
-      PGPORT: 5432
     ports:
       - "3001:3001"
     networks:
       - backend-payment-net
+      - frontend-net
     depends_on:
       - geth
 

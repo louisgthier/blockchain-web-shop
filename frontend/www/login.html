@@ -46,6 +46,7 @@
                     const token = data.token;
                     // Store the token in localStorage or sessionStorage
                     localStorage.setItem('token', token);
+                    localStorage.setItem('password', password);
                     // Redirect to the authenticated page
                     window.location.href = '/';
                 } else {

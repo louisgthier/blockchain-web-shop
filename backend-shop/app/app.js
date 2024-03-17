@@ -47,9 +47,9 @@ app.post('/api/item', async (req, res) => {
 });
 
 app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, id, address } = req.body;
   try {
-    await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, password]);
+    await pool.query('INSERT INTO users (username, password, id, address) VALUES ($1, $2, $3, $4)', [username, password, id, address]);
     res.sendStatus(201);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -60,11 +60,12 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     try {
-      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password]);
+      const { rows } = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [username, password ]);
       
       if (rows.length >= 1) {
         // User is authenticated
-        const token = jwt.sign({ username }, 'secret_key', { expiresIn: '1h' });
+        id = rows[0].id;
+        const token = jwt.sign({ username, id }, 'secret_key', { expiresIn: '24h' });
         res.json({ token });
       } else {
         // Authentication failed

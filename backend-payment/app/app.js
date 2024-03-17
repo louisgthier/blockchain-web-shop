@@ -1,4 +1,3 @@
-const { Pool } = require('pg');
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
@@ -7,24 +6,31 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3001;
 
-
-const pool = new Pool({
-    user: 'your_username',
-    host: 'localhost',
-    database: 'your_database_name',
-    password: 'your_password',
-    port: 5432,
-});
-
 // Middleware
 app.use(bodyParser.json());
 
-async function getUserBalance(userId) {
+const axiosConfig = {
+    headers: {
+        'Content-Type': 'application/json',
+    }
+};
+
+async function getUserBalance(address) {
     try {
-        const result = await pool.query('SELECT balance FROM users WHERE id = $1', [userId]);
-        return result.rows[0].balance;
+        // Get the balance of the user from the blockchain RPC server using eth_getBalance
+        const response = await axios.post('http://geth:8545', {
+            jsonrpc: '2.0',
+            method: 'eth_getBalance',
+            params: [address, 'latest'],
+            id: 1
+        }, axiosConfig);
+        const weiBalance = parseInt(response.data.result, 16);
+        const etherBalance = weiBalance / 10**18;
+        return etherBalance;
     } catch (error) {
-        throw new Error('Error fetching user balance');
+        // Log details about the error
+        console.error('Error getting user balance:', error);
+        throw new Error('Error getting user balance', error);
     }
 }
 
@@ -49,10 +55,10 @@ async function makeTransaction(buyerId, sellerId, price) {
 }
 
 // GET /api/user/balance
-app.get('/api/user/:userId/balance', async (req, res) => {
-    const userId = req.params.userId;
+app.get('/api/user/:address/balance', async (req, res) => {
+    const address = req.params.address;
     try {
-        const balance = await getUserBalance(userId);
+        const balance = await getUserBalance(address);
         res.json({ balance });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -75,5 +81,5 @@ app.post('/api/transaction', async (req, res) => {
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-  });
+});
   
