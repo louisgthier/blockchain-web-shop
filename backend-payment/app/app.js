@@ -2,9 +2,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const bodyParser = require('body-parser');
+const { ethers, JsonRpcProvider, parseEther } = require('ethers');
 
 const app = express();
 const port = 3001;
+
+const rpcServer = 'http://geth:8545';
 
 // Middleware
 app.use(bodyParser.json());
@@ -18,7 +21,7 @@ const axiosConfig = {
 async function getUserBalance(address) {
     try {
         // Get the balance of the user from the blockchain RPC server using eth_getBalance
-        const response = await axios.post('http://geth:8545', {
+        const response = await axios.post(rpcServer, {
             jsonrpc: '2.0',
             method: 'eth_getBalance',
             params: [address, 'latest'],
@@ -34,23 +37,18 @@ async function getUserBalance(address) {
     }
 }
 
-async function makeTransaction(buyerId, sellerId, price) {
+async function makeTransaction(to, privateKey, amount) {
     try {
-        const buyerBalance = await getUserBalance(buyerId);
-        
-        if (buyerBalance < price) {
-            throw new Error('Insufficient balance');
-        }
-
-        await pool.query('BEGIN');
-        await pool.query('UPDATE users SET balance = balance - $1 WHERE id = $2', [price, buyerId]);
-        await pool.query('UPDATE users SET balance = balance + $1 WHERE id = $2', [price, sellerId]);
-        await pool.query('COMMIT');
-        
-        return true;
+        const provider = new JsonRpcProvider(rpcServer);
+        const wallet = new ethers.Wallet(privateKey, provider);
+        const transaction = await wallet.sendTransaction({
+            to: to,
+            value: parseEther(amount)
+        });
+        return transaction.hash;
     } catch (error) {
-        await pool.query('ROLLBACK');
-        throw new Error('Error making transaction');
+        console.error('Error making transaction:', error.message);
+        throw new Error(`Error making transaction: ${error.message}`);
     }
 }
 
@@ -67,11 +65,11 @@ app.get('/api/user/:address/balance', async (req, res) => {
 
 // POST /api/transaction
 app.post('/api/transaction', async (req, res) => {
-    const { buyerId, sellerId, price } = req.body;
+    const { to, privateKey, amount } = req.body;
 
     try {
-        const transactionStatus = await transactionController.makeTransaction(buyerId, sellerId, price);
-        res.status(200).json({ success: transactionStatus });
+        const transactionHash = await makeTransaction(to, privateKey, amount);
+        res.status(200).json({ success: true, transactionHash});
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -82,4 +80,3 @@ app.post('/api/transaction', async (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-  

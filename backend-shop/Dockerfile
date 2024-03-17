@@ -5,6 +5,9 @@ FROM node:14
 WORKDIR /app
 COPY ./app /app
 
+ENV PLATFORM_ADDRESS 0x0
+ENV PLATFORM_PRIVATE_KEY 0x0
+
 # Install dependencies
 RUN npm install
 
@@ -12,4 +15,4 @@ RUN npm install
 EXPOSE 3000
 
 # Command to run the application
-CMD ["node", "app.js"]
+CMD ["sh", "-c", "node app.js ${PLATFORM_ADDRESS} ${PLATFORM_PRIVATE_KEY}"]

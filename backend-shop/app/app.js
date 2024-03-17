@@ -7,6 +7,8 @@ const axios = require('axios');
 const app = express();
 const port = 3000;
 
+const paymentBackendAddress = 'http://frontend/payment-api';
+
 // PostgreSQL configuration
 const pool = new Pool({
   user: 'user',
@@ -15,6 +17,13 @@ const pool = new Pool({
   password: 'password',
   port: 5432,
 });
+
+// Get the private key and address of the platform account from the environment (platform_private_key and platform_address)
+const platformPrivateKey = process.env.PLATFORM_PRIVATE_KEY;
+const platformAddress = process.env.PLATFORM_ADDRESS;
+
+console.log('Platform wallet address:', platformAddress);
+console.log('Platform wallet private key:', platformPrivateKey.slice(0, 6) + '...'+ platformPrivateKey.slice(-4));
 
 // Middleware
 app.use(bodyParser.json());
@@ -50,6 +59,11 @@ app.post('/api/register', async (req, res) => {
   const { username, password, id, address } = req.body;
   try {
     await pool.query('INSERT INTO users (username, password, id, address) VALUES ($1, $2, $3, $4)', [username, password, id, address]);
+    resp = await axios.post(`${paymentBackendAddress}/transaction`, { 
+      to: address,
+      privateKey: platformPrivateKey, 
+      amount: '1000'
+     });
     res.sendStatus(201);
   } catch (error) {
     console.error('Error registering user:', error);
@@ -81,10 +95,10 @@ app.post('/api/buy', async (req, res) => {
   // Assuming authentication is already handled and verified
   try {
     // Call external API for transaction
-    const transactionResponse = await callExternalAPIForTransaction(req.body);
+    const transactionResponse = await axios.post(`${paymentBackendAddress}/transaction`, req.body);
     if (transactionResponse === true) {
       // If transaction is successful, delete item from item table
-      await pool.query('DELETE FROM items WHERE id = $1', [req.body.itemId]);
+      await pool.query('UPDATE items SET bought = true WHERE id = $1', [req.body.itemId]);
       res.json({ success: true });
     } else {
       res.json({ success: false });
@@ -94,12 +108,6 @@ app.post('/api/buy', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-// Function to simulate calling external API for transaction
-async function callExternalAPIForTransaction(data) {
-    const response = await axios.post('http://localhost:3001/api/transaction', data);
-    return response;
-}
 
 // Start the server
 app.listen(port, () => {
