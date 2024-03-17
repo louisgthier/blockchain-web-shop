@@ -105,21 +105,25 @@ services:
       - no-new-privileges:true
 
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
+  # geth:
+  #   image: ethereum/client-go
+  #   volumes:
+  #     - ./geth/start-geth.sh:/start-geth.sh
+  #     - chaindata-volume:/root/.ethereum
+  #     - ./geth/genesis.json:/root/genesis.json
+  #   command: []
+  #   entrypoint: ["/bin/sh", "/start-geth.sh"]
+  #   ports:
+  #     - "8545:8545"
+  #   networks:
+  #     - backend-payment-net 
 
   # Creates a genesis state for the beacon chain using a YAML configuration file and
   # a deterministic set of 64 validators.
   create-beacon-chain-genesis:
     image: "gcr.io/prysmaticlabs/prysm/cmd/prysmctl"
-    command:
-      - testnet
-      - generate-genesis
-      - --fork=capella
-      - --num-validators=64
-      - --genesis-time-delay=15
-      - --output-ssz=/consensus/genesis.ssz
-      - --chain-config-file=/consensus/config.yml
-      - --geth-genesis-json-in=/execution/genesis.json
-      - --geth-genesis-json-out=/execution/genesis.json
+    command: []
+    entrypoint: ["/bin/bash", "/consensus/genesis.sh"]
     volumes:
       - ./consensus:/consensus
       - ./execution:/execution
@@ -138,7 +142,7 @@ services:
   # (geth has a `removedb` option, but it asks for a keyboard confirmation, so we use this instead)
   geth-remove-db:
     image: "alpine:3.19.0"
-    command: rm -rf /execution/geth
+    command: echo "Db reset disabled" # rm -rf /execution/geth
     volumes:
       - ./execution:/execution
     networks:
@@ -155,7 +159,8 @@ services:
   # Sets up the genesis configuration for the go-ethereum client from a JSON file.
   geth-genesis:
     image: "ethereum/client-go:latest"
-    command: --datadir=/execution init /execution/genesis.json
+    command: []
+    entrypoint: ["/bin/sh", "/execution/genesis.sh"]
     volumes:
       - ./execution:/execution
       - ./execution/genesis.json:/execution/genesis.json
@@ -201,7 +206,7 @@ services:
       - --suggested-fee-recipient=0x123463a4b065722e99115d6c222f267d9cabb524
       - --minimum-peers-per-subnet=0
       - --enable-debug-rpc-endpoints
-      - --force-clear-db
+      # - --force-clear-db
     depends_on:
       create-beacon-chain-genesis:
         condition: service_completed_successfully
@@ -284,7 +289,7 @@ services:
       - --interop-num-validators=64
       - --interop-start-index=0
       - --chain-config-file=/consensus/config.yml
-      - --force-clear-db
+      # - --force-clear-db
       - --verbosity=warn
     depends_on:
       beacon-chain:
