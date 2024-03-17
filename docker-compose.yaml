@@ -24,7 +24,7 @@ services:
       timeout: 10s
       retries: 3
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
   backend-shop:
     build: ./backend-shop
@@ -55,7 +55,7 @@ services:
       timeout: 10s
       retries: 3
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
   backend-payment:
     build: ./backend-payment
@@ -77,7 +77,7 @@ services:
       timeout: 10s
       retries: 3
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
   db-shop:
     image: postgres
@@ -102,7 +102,7 @@ services:
       timeout: 10s
       retries: 3
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
 
@@ -131,7 +131,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
   # Removes the database of the go-ethereum execution client to ensure we start from a clean state.
@@ -149,7 +149,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
   # Sets up the genesis configuration for the go-ethereum client from a JSON file.
@@ -172,7 +172,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
   # Runs a Prysm beacon chain from a specified genesis state created in the previous step
@@ -223,7 +223,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
   # Runs the go-ethereum execution client with the specified, unlocked account and necessary
@@ -270,7 +270,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
   # We run a validator client with 64, deterministically-generated keys that match
@@ -299,7 +299,7 @@ services:
           cpus: '0.5'
           memory: 512M
     security_opt:
-      - apparmor:unconfined
+      - no-new-privileges:true
 
 
 volumes:
