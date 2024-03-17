@@ -78,13 +78,13 @@ services:
 
   # Removes the database of the go-ethereum execution client to ensure we start from a clean state.
   # (geth has a `removedb` option, but it asks for a keyboard confirmation, so we use this instead)
-  # geth-remove-db:
-  #   image: "alpine:3.19.0"
-  #   command: rm -rf /execution/geth
-  #   volumes:
-  #     - ./execution:/execution
-  #   networks:
-  #     - backend-payment-net
+  geth-remove-db:
+    image: "alpine:3.19.0"
+    command: rm -rf /execution/geth
+    volumes:
+      - ./execution:/execution
+    networks:
+      - backend-payment-net
 
   # Sets up the genesis configuration for the go-ethereum client from a JSON file.
   geth-genesis:
@@ -96,8 +96,8 @@ services:
     depends_on:
       create-beacon-chain-genesis:
         condition: service_completed_successfully
-      # geth-remove-db:
-      #   condition: service_completed_successfully
+      geth-remove-db:
+        condition: service_completed_successfully
     networks:
       - backend-payment-net
 
