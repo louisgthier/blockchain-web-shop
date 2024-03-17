@@ -17,5 +17,5 @@ build_backend_shop:
 
     - /kaniko/executor
       --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/backend_shop/Dockerfile"
+      --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
       --destination "${IMAGE_NAME1}:${CI_COMMIT_SHORT_SHA}" 
