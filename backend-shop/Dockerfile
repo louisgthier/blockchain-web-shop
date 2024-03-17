@@ -1,12 +1,18 @@
 # Use the official Node.js 14 image
 FROM node:14
 
-# Set the working directory in the container
-WORKDIR /app
-COPY ./app /app
+# Create a new user and group with a non-root UID/GID
+RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
 
-ENV PLATFORM_ADDRESS 0x0
-ENV PLATFORM_PRIVATE_KEY 0x0
+# Set the working directory and change ownership to the new user
+WORKDIR /app
+RUN chown -R appuser:appgroup /app
+
+# Switch to the non-root user
+USER appuser
+
+# Copy application files
+COPY ./app /app
 
 # Install dependencies
 RUN npm install

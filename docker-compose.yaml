@@ -31,6 +31,10 @@ services:
       - frontend-net
     depends_on:
       - db-shop
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
 
   backend-payment:
     build: ./backend-payment
@@ -53,6 +57,10 @@ services:
       - ./init-db-shop:/docker-entrypoint-initdb.d
     networks:
       - backend-shop-net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'  # Limit CPU usage to 50%
 
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
 
