@@ -23,6 +23,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    security_opt:
+      - apparmor:unconfined
 
   backend-shop:
     build: ./backend-shop
@@ -52,6 +54,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    security_opt:
+      - apparmor:unconfined
 
   backend-payment:
     build: ./backend-payment
@@ -72,6 +76,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    security_opt:
+      - apparmor:unconfined
 
   db-shop:
     image: postgres
@@ -95,6 +101,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    security_opt:
+      - apparmor:unconfined
+
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
 
   # Creates a genesis state for the beacon chain using a YAML configuration file and
@@ -121,6 +130,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
   # Removes the database of the go-ethereum execution client to ensure we start from a clean state.
   # (geth has a `removedb` option, but it asks for a keyboard confirmation, so we use this instead)
@@ -136,6 +148,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
   # Sets up the genesis configuration for the go-ethereum client from a JSON file.
   geth-genesis:
@@ -156,6 +171,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
   # Runs a Prysm beacon chain from a specified genesis state created in the previous step
   # and connects to go-ethereum in the same network as the execution client.
@@ -204,6 +222,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
   # Runs the go-ethereum execution client with the specified, unlocked account and necessary
   # APIs to allow for proof-of-stake consensus via Prysm.
@@ -248,6 +269,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
   # We run a validator client with 64, deterministically-generated keys that match
   # The validator keys present in the beacon chain genesis state generated a few steps above.
@@ -274,6 +298,9 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    security_opt:
+      - apparmor:unconfined
+
 
 volumes:
   db-shop-volume:
