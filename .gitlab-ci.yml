@@ -1,15 +1,14 @@
 stages:
+  - kics
   - build_backend-shop
   - build_backend-payment
-  - kick_backend-shop
-  - kick_backend-payment
 
 variables:
   IMAGE_NAME1: "vivien8/backend-shop"
   IMAGE_NAME2: "vivien8/backend-payment"
 
 kics:
-  stage: kick_backend-shop
+  stage: kics
   image:
     name: checkmarx/kics:latest
     entrypoint: [""]
