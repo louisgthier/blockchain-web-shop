@@ -10,6 +10,8 @@ services:
       - ./frontend/nginx/default.conf:/etc/nginx/conf.d/default.conf
     networks:
       - frontend-net
+    depends_on:
+      - backend-shop
 
   backend-shop:
     build: ./backend-shop
@@ -40,7 +42,7 @@ services:
     networks:
       - backend-payment-net
     depends_on:
-      - db-payment
+      - geth
 
   db-shop:
     image: postgres
@@ -54,17 +56,28 @@ services:
     networks:
       - backend-shop-net
 
-  db-payment:
-    image: postgres
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: database_payment
+  # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
+  geth:
+    image: ethereum/client-go
+    volumes:
+      - ./geth/start-geth.sh:/start-geth.sh
+      - chaindata-volume:/root/.ethereum
+      - ./geth/genesis.json:/root/genesis.json
+    command: []
+    entrypoint: ["/bin/sh", "/start-geth.sh"]
+    ports:
+      - "8545:8545"
     networks:
       - backend-payment-net
+      
+
+
+  
 
 volumes:
   db-shop-volume:
+  geth-volume:
+  chaindata-volume:
 
 networks:
   frontend-net:
