@@ -18,6 +18,11 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   backend-shop:
     build: ./backend-shop
@@ -42,6 +47,11 @@ services:
           cpus: '0.5'
           memory: 512M
     env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   backend-payment:
     build: ./backend-payment
@@ -57,6 +67,12 @@ services:
         limits:
           cpus: '0.5'
           memory: 512M
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   db-shop:
     image: postgres
     environment:
@@ -74,7 +90,11 @@ services:
           cpus: '0.5'
           memory: 512M
     env_file: .env
-
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
 
   # Creates a genesis state for the beacon chain using a YAML configuration file and
