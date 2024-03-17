@@ -18,7 +18,7 @@ build_backend-shop:
       '\n')\"}}}" > /kaniko/.docker/config.json
 
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
+      --context "${CI_PROJECT_DIR}/backend-shop"
       --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
       --destination "${IMAGE_NAME1}:${CI_COMMIT_SHORT_SHA}" 
 
@@ -34,6 +34,6 @@ build_backend-payment:
       '\n')\"}}}" > /kaniko/.docker/config.json
 
     - /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
+      --context "${CI_PROJECT_DIR}/backend-payment"
       --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
       --destination "${IMAGE_NAME2}:${CI_COMMIT_SHORT_SHA}"
