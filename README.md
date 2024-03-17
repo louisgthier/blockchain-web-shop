@@ -33,30 +33,19 @@ Before getting started, ensure you have the following dependencies installed on 
 
 ## Usage
 ### Registration
-- To register a new account, click on the "Register" link and provide the required information.
+- To register a new account, click on the "Register" button and provide the required information.
 
 ### Login
-- After registration, you can log in with your credentials using the "Login" page.
+- After registration, you are automatically logged in. If you already have an account, you can log in with your credentials using the "Login" page.
 
 ### Shopping
-- Browse through the available items in the shop.
-- Click on an item to view its details and add it to your cart.
-- Proceed to checkout when you're ready to make a purchase.
+- One connected, you will see your blockchain address and your balance
+- All available items are displayed on the home page
+- Click on buy to buy an item
 
 ### Adding Items to the Shop
-- If you have admin privileges, you can add new items to the shop.
-- Access the admin panel and navigate to the "Add Item" section to add items.
+- you can add new items by entering his name, price and image URL
 
 ### Payment Process with Blockchain
 - When checking out, the payment process is seamlessly integrated with blockchain technology.
 - Your transactions are secure and transparent thanks to blockchain's decentralized ledger.
-
-## Troubleshooting
-- If you encounter any issues during installation or setup, please refer to the troubleshooting section in our documentation or reach out to our support team for assistance.
-
-## Feedback and Support
-We welcome your feedback and suggestions for improving our application. If you have any questions or need support, please don't hesitate to contact us at [support@example.com](mailto:support@example.com).
-
-Thank you for using our Simple E-Commerce Application!
-
-*Note: Replace `<repository_url>` and `<project_directory>` with the appropriate values specific to your project.*
