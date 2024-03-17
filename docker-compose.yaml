@@ -21,10 +21,10 @@ services:
   backend-shop:
     build: ./backend-shop
     environment:
-      PGUSER: user
+      PGUSER: ${POSTGRES_USER}
       PGHOST: db-shop
-      PGDATABASE: database_shop
-      PGPASSWORD: password
+      PGDATABASE: ${POSTGRES_DB}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
       PGPORT: 5432
       PLATFORM_PRIVATE_KEY: ${PLATFORM_PRIVATE_KEY}
       PLATFORM_ADDRESS: ${PLATFORM_ADDRESS}
@@ -39,6 +39,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
     env_file: .env
 
   backend-payment:
@@ -68,7 +69,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.5'  # Limit CPU usage to 50%
+          cpus: '0.5'
+          memory: 512M
     env_file: .env
 
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
@@ -96,6 +98,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   # Removes the database of the go-ethereum execution client to ensure we start from a clean state.
   # (geth has a `removedb` option, but it asks for a keyboard confirmation, so we use this instead)
@@ -110,6 +113,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   # Sets up the genesis configuration for the go-ethereum client from a JSON file.
   geth-genesis:
@@ -129,6 +133,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   # Runs a Prysm beacon chain from a specified genesis state created in the previous step
   # and connects to go-ethereum in the same network as the execution client.
@@ -176,6 +181,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   # Runs the go-ethereum execution client with the specified, unlocked account and necessary
   # APIs to allow for proof-of-stake consensus via Prysm.
@@ -219,6 +225,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   # We run a validator client with 64, deterministically-generated keys that match
   # The validator keys present in the beacon chain genesis state generated a few steps above.
@@ -244,6 +251,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
 volumes:
   db-shop-volume:
