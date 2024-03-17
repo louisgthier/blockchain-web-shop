@@ -17,6 +17,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
 
   backend-shop:
     build: ./backend-shop
@@ -55,6 +56,7 @@ services:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
   db-shop:
     image: postgres
     environment:
