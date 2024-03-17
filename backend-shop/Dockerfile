@@ -3,7 +3,7 @@ FROM node:14
 
 # Set the working directory in the container
 WORKDIR /app
-COPY ./app /app
+COPY ./backend-shop /app
 
 # Install dependencies
 RUN npm install
