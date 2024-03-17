@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Online Store</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+    <script src="ethers-5.2.js" type="application/javascript"></script>
     <script src="wallet.js"></script>
 </head>
 <body class="bg-gray-100">
@@ -51,6 +51,11 @@
             // Function to add an item
             function addItem(event) {
                 event.preventDefault();
+
+                if (!checkAuth()) {
+                    alert('You need to be logged in to add an item.');
+                    return;
+                }
 
                 const token = localStorage.getItem('token');
                 const itemName = document.getElementById('itemName').value;
