@@ -1,8 +1,10 @@
 # Use the official Node.js 14 image
-FROM node:14
+FROM node:14-alpine3.17
 
 # Create a new user and group with a non-root UID/GID
 RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+
+RUN apk --no-cache add curl
 
 # Set the working directory and change ownership to the new user
 WORKDIR /app
@@ -21,7 +23,7 @@ RUN npm install
 EXPOSE 3000
 
 # Command to run the application
-CMD ["sh", "-c", "node app.js ${PLATFORM_ADDRESS} ${PLATFORM_PRIVATE_KEY}"]
+CMD ["node", "app.js"]
 
 # HEALTHCHECK instruction
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \

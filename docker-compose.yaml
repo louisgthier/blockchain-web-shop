@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   frontend:
-    image: nginx
+    image: nginx:1.24.0-alpine
     ports:
       - "127.0.0.1:8080:80"
     volumes:
@@ -70,7 +70,7 @@ services:
           cpus: '0.5'
           memory: 512M
     healthcheck:
-      test: ["CMD-SHELL", "curl --fail http://localhost:3000/health || exit 1"]
+      test: ["CMD-SHELL", "curl --fail http://localhost:3001/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -78,7 +78,7 @@ services:
       - no-new-privileges:true
 
   db-shop:
-    image: postgres
+    image: postgres:16.2-alpine3.19
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

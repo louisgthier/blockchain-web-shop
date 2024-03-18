@@ -45,6 +45,12 @@ console.log('Platform wallet private key:', platformPrivateKey.slice(0, 6) + '..
 app.use(bodyParser.json());
 
 // Routes
+
+// GET /heatlh
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.get('/api/items', async (req, res) => {
   try {
     const { rows } = await pool.query('SELECT * FROM items');

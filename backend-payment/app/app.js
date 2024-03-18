@@ -78,6 +78,11 @@ app.get('/api/user/:address/balance', async (req, res) => {
     }
 });
 
+// GET /health
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
 // POST /api/transaction
 app.post('/api/transaction', async (req, res) => {
     const { to, privateKey, amount } = req.body;
