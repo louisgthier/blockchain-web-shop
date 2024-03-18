@@ -1,7 +1,7 @@
 stages:
   - kics
-  - build_backend-shop
-  - build_backend-payment
+  - build-deploy
+  - build-deploy
 
 variables:
   IMAGE_NAME1: "vivien8/backend-shop"
@@ -21,8 +21,8 @@ kics:
     when: always
 
 
-build_backend-shop:
-  stage: build_backend-shop
+build-deploy-backend-shop:
+  stage: build-deploy
   image:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
@@ -37,8 +37,8 @@ build_backend-shop:
       --dockerfile "${CI_PROJECT_DIR}/backend-shop/Dockerfile"
       --destination "${IMAGE_NAME1}:${CI_COMMIT_SHORT_SHA}" 
 
-build_backend-payment:
-  stage: build_backend-payment
+build-deploy-backend-payment:
+  stage: build-deploy
   image:
     name: gcr.io/kaniko-project/executor:v1.14.0-debug
     entrypoint: [""]
