@@ -55,7 +55,7 @@ Before getting started, ensure you have the following dependencies installed on 
 - Click on buy to buy an item if you have enough funds
 
 ### Adding Items to the Shop
-- You can add new items by entering its name, price and image URL
+- You can add new items by entering their name, price and image URL
 
 ### Payment Process with Blockchain
 - When checking out, the payment process is seamlessly integrated with blockchain technology.
