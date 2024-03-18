@@ -90,6 +90,27 @@ app.post('/api/transaction', async (req, res) => {
     }
 });
 
+// POST /api/check-transaction
+app.post('/api/check-transaction', async (req, res) => {
+    const { to, from, transaction_hash, amount } = req.body;
+    try {
+        const response = await axios.post(rpcServer, {
+            jsonrpc: '2.0',
+            method: 'eth_getTransactionByHash',
+            params: [transaction_hash],
+            id: 1
+        }, axiosConfig);
+        const transaction = response.data.result;
+        if (transaction && transaction.to.toLowerCase() === to.toLowerCase() && transaction.from.toLowerCase() === from.toLowerCase() && parseInt(transaction.value, 16) >= amount * 10**18) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
 
 // Start the server
 app.listen(port, () => {

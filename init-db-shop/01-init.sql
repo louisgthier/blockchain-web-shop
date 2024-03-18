@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS items (
     name VARCHAR(255) NOT NULL,
     price DECIMAL NOT NULL,
     seller_id VARCHAR(255) NOT NULL,
+    seller_address VARCHAR(255) NOT NULL,
     photo_url VARCHAR(255),
     bought BOOLEAN DEFAULT FALSE,
+    transaction_hash VARCHAR(255),
     FOREIGN KEY (seller_id) REFERENCES users (id)
 );

@@ -18,6 +18,8 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
+const jwtSecret = 'secret_key';
+
 const app = express();
 const port = 3000;
 
@@ -54,14 +56,14 @@ app.get('/api/items', async (req, res) => {
 });
 
 app.post('/api/item', async (req, res) => {
-  const { name, price, photo_url } = req.body;
+  const { name, price, photo_url, seller_address } = req.body;
   try {
     const token = req.headers.authorization.split(' ')[1];
-    const decodedToken = jwt.verify(token, 'secret_key');
+    const decodedToken = jwt.verify(token, jwtSecret);
     const { username } = decodedToken;
     const { rows } = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
     const seller_id = rows[0].id;
-    await pool.query('INSERT INTO items (name, price, seller_id, photo_url) VALUES ($1, $2, $3, $4)', [name, price, seller_id, photo_url]);
+    await pool.query('INSERT INTO items (name, price, seller_id, seller_address, photo_url) VALUES ($1, $2, $3, $4, $5)', [name, price, seller_id, seller_address, photo_url]);
     res.sendStatus(201);
   } catch (error) {
     console.error('Error adding item:', error);
@@ -93,7 +95,8 @@ app.post('/api/login', async (req, res) => {
       if (rows.length >= 1) {
         // User is authenticated
         id = rows[0].id;
-        const token = jwt.sign({ username, id }, 'secret_key', { expiresIn: '24h' });
+        address = rows[0].address;
+        const token = jwt.sign({ username, id, address }, jwtSecret, { expiresIn: '24h' });
         res.json({ token });
       } else {
         // Authentication failed
@@ -106,16 +109,33 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.post('/api/buy', async (req, res) => {
-  // Assuming authentication is already handled and verified
+  // Check token
+  const token = req.headers.authorization.split(' ')[1];
+  const decodedToken = jwt.verify(token, jwtSecret);
+  const { id, username } = decodedToken;
+  buyer_adress = decodedToken.address;
+
+  const { item_id, price, seller_address, transaction_hash } = req.body;
+
+  // Check if the transaction hash is not already in the items table
+  const { rows } = await pool.query('SELECT * FROM items WHERE transaction_hash = $1', [transaction_hash]);
+  if (rows.length >= 1) {
+    return res.status(400).json({ error: 'Transaction hash already used' });
+  }
+
   try {
-    // Call external API for transaction
-    const transactionResponse = await axios.post(`${paymentBackendAddress}/transaction`, req.body);
-    if (transactionResponse === true) {
-      // If transaction is successful, delete item from item table
-      await pool.query('UPDATE items SET bought = true WHERE id = $1', [req.body.itemId]);
+    resp = await axios.post(`${paymentBackendAddress}/check-transaction`, { 
+      to: seller_address,
+      from: buyer_adress,
+      transaction_hash: transaction_hash,
+      amount: price
+     });
+    if (resp && resp.data.success) {
+      // Update the items table as bought and transaction_hash to the transaction hash
+      await pool.query('UPDATE items SET bought = true, transaction_hash = $1 WHERE id = $2;', [transaction_hash, item_id]);
       res.json({ success: true });
     } else {
-      res.json({ success: false });
+      res.status(500).json({ success: false });
     }
   } catch (error) {
     console.error('Error buying item:', error);
