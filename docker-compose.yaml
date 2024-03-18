@@ -36,8 +36,6 @@ services:
       PGPORT: 5432
       PLATFORM_PRIVATE_KEY: ${PLATFORM_PRIVATE_KEY}
       PLATFORM_ADDRESS: ${PLATFORM_ADDRESS}
-    ports:
-      - "127.0.0.1:3000:3000"
     networks:
       - backend-shop-net
       - frontend-net
@@ -59,8 +57,6 @@ services:
 
   backend-payment:
     build: ./backend-payment
-    ports:
-      - "127.0.0.1:3001:3001"
     networks:
       - backend-payment-net
       - frontend-net
@@ -297,8 +293,6 @@ services:
 
 volumes:
   db-shop-volume:
-  geth-volume:
-  chaindata-volume:
 
 networks:
   frontend-net:
