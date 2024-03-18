@@ -4,6 +4,20 @@ const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received. Closing gracefully.');
+  // Perform necessary cleanup
+  // Then exit
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received. Closing gracefully.');
+  // Perform necessary cleanup
+  // Then exit
+  process.exit(0);
+});
+
 const app = express();
 const port = 3000;
 

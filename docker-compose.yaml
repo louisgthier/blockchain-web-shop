@@ -64,8 +64,6 @@ services:
     networks:
       - backend-payment-net
       - frontend-net
-    depends_on:
-      - geth
     deploy:
       resources:
         limits:
@@ -105,18 +103,6 @@ services:
       - no-new-privileges:true
 
   # Setup a geth node for the payment backend blockchain. This is a private blockchain started with the genesis.json file.
-  # geth:
-  #   image: ethereum/client-go
-  #   volumes:
-  #     - ./geth/start-geth.sh:/start-geth.sh
-  #     - chaindata-volume:/root/.ethereum
-  #     - ./geth/genesis.json:/root/genesis.json
-  #   command: []
-  #   entrypoint: ["/bin/sh", "/start-geth.sh"]
-  #   ports:
-  #     - "8545:8545"
-  #   networks:
-  #     - backend-payment-net 
 
   # Creates a genesis state for the beacon chain using a YAML configuration file and
   # a deterministic set of 64 validators.
@@ -279,7 +265,7 @@ services:
 
 
   # We run a validator client with 64, deterministically-generated keys that match
-  # The validator keys present in the beacon chain genesis state generated a few steps above.
+  # the validator keys present in the beacon chain genesis state generated a few steps above.
   validator:
     image: "gcr.io/prysmaticlabs/prysm/validator:v4.1.1"
     command:
