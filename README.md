@@ -1,4 +1,4 @@
-# Blockchain E-Commerce Application
+# Blockchain E-Commerce Web Application
 
 ## Overview
 
